@@ -1,0 +1,68 @@
+name: build-idf-rust
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  build-idf-rust:
+    name: Build IDF Rust for ${{ matrix.os }}
+    needs: create_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        #os: [macos-latest, self-hosted-macos-arm64, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-18.04, windows-latest]
+        include:
+        - os: macos-latest
+          ARCH: ''
+          TARGET: macos-x64
+        - os: ubuntu-latest
+          ARCH: ''
+          TARGET: linux-amd64
+        - os: windows-latest
+          ARCH: ''
+          TARGET: win64
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: ivmarkov/rust
+          ref: stable
+      - name: Set up Python
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Prepare build
+        run: python3 ./configure --experimental-targets=Xtensa  --enable-extended --tools=rustfmt
+      - name: Build with x.py
+        run: python3 x.py dist --stage 2
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: build/dist/rust-1.50.0-dev-*.tar.xz
+          asset_name: idf-rust-${{ matrix.TARGET }}.zip
+          asset_content_type: application/x-tar
