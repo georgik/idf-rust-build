@@ -71,7 +71,7 @@ jobs:
           # asset_name: rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
           # asset_path: build/dist/rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
           # asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
-          asset_path: build/dist/rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
-          asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
+          asset_path: build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
+          asset_name: rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
           asset_content_type: application/x-tar
 
