@@ -31,17 +31,18 @@ jobs:
       matrix:
         #os: [macos-latest, self-hosted-macos-arm64, ubuntu-latest, windows-latest]
         #os: [macos-latest, ubuntu-18.04, windows-latest]
-        os: [ubuntu-18.04]
+        #os: [ubuntu-18.04]
+        os: [windows-latest]
         include:
         #- os: macos-latest
         #  ARCH: ''
         #  TARGET: macos-x64
-        - os: ubuntu-18.04
-          ARCH: ''
-          TARGET: linux-amd64
-        #- os: windows-latest
+        #- os: ubuntu-18.04
         #  ARCH: ''
-        #  TARGET: win64
+        #  TARGET: linux-amd64
+        - os: windows-latest
+          ARCH: ''
+          TARGET: win64
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -65,6 +66,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
-          asset_name: rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
+          # asset_path: build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
+          # asset_name: rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
+          asset_path: build/dist/rrust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
+          asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
           asset_content_type: application/x-tar
