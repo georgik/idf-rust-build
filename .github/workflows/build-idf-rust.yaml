@@ -35,7 +35,7 @@ jobs:
         #os: [windows-latest]
         # os: [macos-latest]
         os: [ windows-self-hosted ]
-        include:
+        # include:
         # - os: macos-latest
           # ARCH: ''
           # TARGET: macos-x64
