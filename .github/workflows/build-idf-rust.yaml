@@ -34,8 +34,8 @@ jobs:
         #os: [ubuntu-18.04]
         #os: [windows-latest]
         # os: [macos-latest]
-        # os: [ [self-hosted, Windows, X64] ]
-        os: [ [self-hosted, macOS, M1] ]
+        os: [ [self-hosted, Windows, X64] ]
+        # os: [ [self-hosted, macOS, M1] ]
         # include:
         # - os: macos-latest
           # ARCH: ''
@@ -64,7 +64,7 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
         uses: seanmiddleditch/gha-setup-ninja@master
       - name: Build with x.py
-        run: python3 x.py dist --stage 2
+        run: python3 x.py dist --stage 2 --exclude src/doc
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
@@ -74,11 +74,11 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           # asset_path: build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
           # asset_name: rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
-          # asset_path: build/dist/rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
-          # asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
+          asset_path: build/dist/rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
+          asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
           # asset_path: build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
           # asset_name: rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
-          asset_path: build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz
-          asset_name: rust-1.54.0-dev-aarch64-apple-darwin.tar.xz
+          # asset_path: build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz
+          # asset_name: rust-1.54.0-dev-aarch64-apple-darwin.tar.xz
           asset_content_type: application/x-tar
 
