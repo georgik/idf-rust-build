@@ -52,7 +52,7 @@ jobs:
           repository: esp-rs/rust
           ref: esp
       - name: Set up Python
-        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' || matrix.os == [self-hosted, Windows, X64] }}
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
