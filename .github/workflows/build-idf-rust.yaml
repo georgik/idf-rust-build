@@ -59,7 +59,9 @@ jobs:
       - name: Prepare build
         run: python3 src/bootstrap/configure.py --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
-      - uses: seanmiddleditch/gha-setup-ninja@master
+      - name: Setup Ninja
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
+        uses: seanmiddleditch/gha-setup-ninja@master
       - name: Build with x.py
         run: python3 x.py dist --stage 2
       - name: Upload Release Asset
