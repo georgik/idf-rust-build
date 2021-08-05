@@ -57,7 +57,8 @@ jobs:
         with:
           python-version: '3.8'
       - name: Prepare build
-        run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+        run: python3 src/bootstrap/configure.py --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+        # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Build with x.py
         run: python3 x.py dist --stage 2
