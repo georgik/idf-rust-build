@@ -33,11 +33,12 @@ jobs:
         #os: [macos-latest, ubuntu-18.04, windows-latest]
         #os: [ubuntu-18.04]
         #os: [windows-latest]
-        os: [macos-latest]
+        # os: [macos-latest]
+        os: [ windows-self-hosted ]
         include:
-        - os: macos-latest
-          ARCH: ''
-          TARGET: macos-x64
+        # - os: macos-latest
+          # ARCH: ''
+          # TARGET: macos-x64
         #- os: ubuntu-18.04
         #  ARCH: ''
         #  TARGET: linux-amd64
@@ -51,7 +52,7 @@ jobs:
           repository: esp-rs/rust
           ref: esp
       - name: Set up Python
-        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' || matrix.os == 'windows-self-hosted' }}
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
@@ -69,9 +70,9 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           # asset_path: build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
           # asset_name: rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz
-          # asset_path: build/dist/rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
-          # asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
-          asset_path: build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
-          asset_name: rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
+          asset_path: build/dist/rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
+          asset_name: rust-1.54.0-dev-x86_64-pc-windows-msvc.tar.xz
+          # asset_path: build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
+          # asset_name: rust-1.54.0-dev-x86_64-apple-darwin.tar.xz
           asset_content_type: application/x-tar
 
