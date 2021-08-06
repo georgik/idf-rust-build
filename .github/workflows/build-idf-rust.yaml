@@ -71,12 +71,12 @@ jobs:
       - name: Dist bundle
         shell: bash
         run: |
-          mkdir -p build/dist/esp \
-          cp -r build/stage2/x86_64-pc-windows-msvc/* build/dist/esp \
-          tar xf ../rust-src-1.54.0-dev.tar.xz \
-          cp -r rust-src-1.54.0-dev/* build/dist/esp \
-          cd build/dist \
-          find . -name '*.pdb' -delete \
+          mkdir -p build/dist/esp
+          cp -r build/stage2/x86_64-pc-windows-msvc/* build/dist/esp
+          tar xf ../rust-src-1.54.0-dev.tar.xz
+          cp -r rust-src-1.54.0-dev/* build/dist/esp
+          cd build/dist
+          find . -name '*.pdb' -delete
           zip -r esp.zip esp
       - name: Upload Release Asset
         id: upload-release-asset
