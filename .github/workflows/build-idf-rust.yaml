@@ -69,13 +69,14 @@ jobs:
       - name: Setup Ninja
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-18.04' || matrix.os == 'windows-latest' }}
         uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Prepare binary artifact of espressif/llvm-project
-        run: |
-            mkdir llvm
-            wget --quiet https://github.com/georgik/idf-llvm-build/releases/download/v11.0.0/llvm-11.0.0-${{ matrix.TARGET }}.tar.xz
-            tar xf llvm-11.0.0-${{ matrix.target }}.tar.xz
+      #- name: Prepare binary artifact of espressif/llvm-project
+      #  run: |
+      #      mkdir llvm
+      #      wget --quiet https://github.com/georgik/idf-llvm-build/releases/download/v11.0.0/llvm-11.0.0-${{ matrix.TARGET }}.tar.xz
+      #      tar xf llvm-11.0.0-${{ matrix.target }}.tar.xz
       - name: Prepare build
-        run: python3 src/bootstrap/configure.py --llvm-root=llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+        run: python3 src/bootstrap/configure.py --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+        # run: python3 src/bootstrap/configure.py --llvm-root=llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - name: Build with x.py - only components
         if: ${{ matrix.os == 'windows-latest' }}
