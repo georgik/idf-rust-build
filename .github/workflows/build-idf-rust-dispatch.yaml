@@ -36,6 +36,8 @@ jobs:
         uses: bruceadams/get-release@v1.2.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: 'v1.54.0-dev'
 
   build-idf-rust:
     name: Build IDF Rust for ${{ matrix.os }}
