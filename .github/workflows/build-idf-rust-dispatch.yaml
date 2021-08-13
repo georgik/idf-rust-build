@@ -25,10 +25,21 @@ jobs:
   #         release_name: Release ${{ github.ref }}
   #         draft: false
   #         prerelease: false
+  get_release:
+    name: Get release
+    outputs:
+      upload_url: ${{ steps.get_release.outputs.upload_url }}
+    steps:
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   build-idf-rust:
     name: Build IDF Rust for ${{ matrix.os }}
     # needs: create_release
+    needs: get_release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -73,11 +84,6 @@ jobs:
           ASSET_NAME: 'rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
           ASSET_CONTENT_TYPE: 'application/x-tar'
     steps:
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.2.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
@@ -125,7 +131,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          upload_url: ${{ needs.get_release.outputs.upload_url }}
           asset_path: ${{ matrix.ASSET_PATH }}
           asset_name: ${{ matrix.ASSET_NAME }}
           # asset_path: build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz
