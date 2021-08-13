@@ -27,6 +27,7 @@ jobs:
   #         prerelease: false
   get_release:
     name: Get release
+    runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.get_release.outputs.upload_url }}
     steps:
