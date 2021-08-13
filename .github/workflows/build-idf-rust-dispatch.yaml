@@ -119,7 +119,7 @@ jobs:
         run: python3 src/bootstrap/configure.py --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - name: Prepare build - cached LLVM
         if: ${{ matrix.os == 'macos-m1-self-hosted' }}
-        run: python3 src/bootstrap/configure.py --llvm-root=../llvm/ --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+        run: python3 src/bootstrap/configure.py --llvm-root=../llvm/build --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: python3 src/bootstrap/configure.py --llvm-root=llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - name: Build with x.py - only components
