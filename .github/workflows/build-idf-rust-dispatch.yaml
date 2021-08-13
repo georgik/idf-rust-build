@@ -28,7 +28,7 @@ jobs:
 
   build-idf-rust:
     name: Build IDF Rust for ${{ matrix.os }}
-    needs: create_release
+    # needs: create_release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
