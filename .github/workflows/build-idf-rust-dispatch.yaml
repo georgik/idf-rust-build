@@ -1,27 +1,30 @@
-name: build-idf-rust
+name: build-idf-rust-dispatch
+
+# on:
+#   push:
+#     tags:
+#     - 'v*'
 
 on:
-  push:
-    tags:
-    - 'v*'
+  workflow_dispatch
 
 jobs:
-  create_release:
-    name: Create release
-    runs-on: ubuntu-18.04
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+  # create_release:
+  #   name: Create release
+  #   runs-on: ubuntu-18.04
+  #   outputs:
+  #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #   steps:
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: Release ${{ github.ref }}
+  #         draft: false
+  #         prerelease: false
 
   build-idf-rust:
     name: Build IDF Rust for ${{ matrix.os }}
@@ -30,33 +33,51 @@ jobs:
     strategy:
       matrix:
         #os: [macos-latest, self-hosted-macos-arm64, ubuntu-latest, windows-latest]
-        os: [macos-latest, ubuntu-18.04 ]
+        #os: [macos-latest, ubuntu-18.04 ]
         #os: [macos-latest, ubuntu-18.04, windows-latest]
         #os: [ubuntu-18.04]
         #os: [windows-latest]
         # os: [macos-latest]
         # os: [ [self-hosted, Windows, X64] ]
         # os: [ [self-hosted, macOS, M1] ]
+        os: [ windows-self-hosted, macos-m1-self-hosted ]
         include:
-        - os: macos-latest
-          ARCH: ''
-          TARGET: macos-x64
-          ASSET_PATH: 'build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz'
-          ASSET_NAME: 'rust-1.54.0-dev-x86_64-x86_64-apple-darwin.tar.xz'
-          ASSET_CONTENT_TYPE: 'application/x-tar'
-        - os: ubuntu-18.04
-          ARCH: ''
-          TARGET: linux-x64
-          ASSET_PATH: 'build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz'
-          ASSET_NAME: 'rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz'
-          ASSET_CONTENT_TYPE: 'application/x-tar'
+        # - os: macos-latest
+        #   ARCH: ''
+        #   TARGET: macos-x64
+        #   ASSET_PATH: 'build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz'
+        #   ASSET_NAME: 'rust-1.54.0-dev-x86_64-x86_64-apple-darwin.tar.xz'
+        #   ASSET_CONTENT_TYPE: 'application/x-tar'
+        # - os: ubuntu-18.04
+        #   ARCH: ''
+        #   TARGET: linux-x64
+        #   ASSET_PATH: 'build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz'
+        #   ASSET_NAME: 'rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz'
+        #   ASSET_CONTENT_TYPE: 'application/x-tar'
         #- os: windows-latest
         #  ARCH: ''
         #  TARGET: win-x64
         #  ASSET_PATH: 'build/dist/esp.zip'
         #  ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
         #  ASSET_CONTENT_TYPE: 'application/zip'
+        - os: windows-self-hosted
+          ARCH: ''
+          TARGET: win-x64
+          ASSET_PATH: 'build/dist/esp.zip'
+          ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
+          ASSET_CONTENT_TYPE: 'application/zip'
+        - os: macos-m1-self-hosted
+          ARCH: ''
+          TARGET: win-x64
+          ASSET_PATH: 'build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
+          ASSET_NAME: 'rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
+          ASSET_CONTENT_TYPE: 'application/x-tar'
     steps:
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
@@ -80,7 +101,7 @@ jobs:
         # run: python3 src/bootstrap/configure.py --llvm-root=llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - name: Build with x.py - only components
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-self-hosted' }}
         run: |
           python3 x.py build compiler/rustc src/tools/rustfmt library/std --stage 2
           python3 x.py dist src --stage 2
@@ -88,7 +109,7 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-18.04' }}
         run: python3 x.py dist --stage 2 --exclude src/doc
       - name: Dist bundle for Windows
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-self-hosted' }}
         shell: bash
         run: |
           mkdir -p build/dist/esp
@@ -104,7 +125,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ${{ matrix.ASSET_PATH }}
           asset_name: ${{ matrix.ASSET_NAME }}
           # asset_path: build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz
