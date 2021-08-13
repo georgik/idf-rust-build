@@ -63,7 +63,8 @@ jobs:
         # os: [macos-latest]
         # os: [ [self-hosted, Windows, X64] ]
         # os: [ [self-hosted, macOS, M1] ]
-        os: [ windows-self-hosted, macos-m1-self-hosted ]
+        #os: [ windows-self-hosted, macos-m1-self-hosted ]
+        os: [ windows-self-hosted ]
         include:
         # - os: macos-latest
         #   ARCH: ''
@@ -89,12 +90,12 @@ jobs:
           ASSET_PATH: 'build/dist/esp.zip'
           ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
           ASSET_CONTENT_TYPE: 'application/zip'
-        - os: macos-m1-self-hosted
-          ARCH: ''
-          TARGET: win-x64
-          ASSET_PATH: 'build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
-          ASSET_NAME: 'rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
-          ASSET_CONTENT_TYPE: 'application/x-tar'
+        # - os: macos-m1-self-hosted
+        #   ARCH: ''
+        #   TARGET: win-x64
+        #   ASSET_PATH: 'build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
+        #   ASSET_NAME: 'rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
+        #   ASSET_CONTENT_TYPE: 'application/x-tar'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
