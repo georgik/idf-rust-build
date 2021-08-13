@@ -35,11 +35,11 @@ jobs:
     - uses: octokit/request-action@v2.x
       id: get_latest_release
       with:
-          route: GET /repos/{owner}/{repo}/releases/latest
-          owner: georgik
-          repo: idf-rust-build
+        route: GET /repos/{owner}/{repo}/releases/latest
+        owner: georgik
+        repo: idf-rust-build
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: get upload url
       id: get_upload_url
       run: |
@@ -114,8 +114,12 @@ jobs:
       #      mkdir llvm
       #      wget --quiet https://github.com/georgik/idf-llvm-build/releases/download/v11.0.0/llvm-11.0.0-${{ matrix.TARGET }}.tar.xz
       #      tar xf llvm-11.0.0-${{ matrix.target }}.tar.xz
-      - name: Prepare build
+      - name: Prepare build - not cached LLVM
+        if: ${{ matrix.os != 'macos-m1-self-hosted' }}
         run: python3 src/bootstrap/configure.py --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+      - name: Prepare build - cached LLVM
+        if: ${{ matrix.os == 'macos-m1-self-hosted' }}
+        run: python3 src/bootstrap/configure.py --llvm-root=../llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: python3 src/bootstrap/configure.py --llvm-root=llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - name: Build with x.py - only components
