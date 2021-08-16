@@ -126,8 +126,8 @@ jobs:
       - name: Build with x.py - only components
         if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-self-hosted' }}
         run: |
-          python3 x.py build compiler/rustc src/tools/rustfmt library/std --stage 2
-          python3 x.py dist src --stage 2
+          python3 x.py build compiler/rustc src/tools/rustfmt library/std --stage 2 --exclude src/doc
+          python3 x.py dist src --stage 2 --exclude src/doc
       - name: Build with x.py - dist packages
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-18.04' }}
         run: python3 x.py dist --stage 2 --exclude src/doc
