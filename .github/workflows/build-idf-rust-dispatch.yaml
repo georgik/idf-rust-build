@@ -72,30 +72,35 @@ jobs:
         #   ASSET_PATH: 'build/dist/rust-1.54.0-dev-x86_64-apple-darwin.tar.xz'
         #   ASSET_NAME: 'rust-1.54.0-dev-x86_64-x86_64-apple-darwin.tar.xz'
         #   ASSET_CONTENT_TYPE: 'application/x-tar'
+        #   LLVM_ROOT_OPTION: ''
         # - os: ubuntu-18.04
         #   ARCH: ''
         #   TARGET: linux-x64
         #   ASSET_PATH: 'build/dist/rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz'
         #   ASSET_NAME: 'rust-1.54.0-dev-x86_64-unknown-linux-gnu.tar.xz'
         #   ASSET_CONTENT_TYPE: 'application/x-tar'
+        #   LLVM_ROOT_OPTION: ''
         #- os: windows-latest
         #  ARCH: ''
         #  TARGET: win-x64
         #  ASSET_PATH: 'build/dist/esp.zip'
         #  ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
         #  ASSET_CONTENT_TYPE: 'application/zip'
+        #  LLVM_ROOT_OPTION: ''
         - os: windows-self-hosted
           ARCH: ''
           TARGET: win-x64
           ASSET_PATH: 'build/dist/esp.zip'
           ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
           ASSET_CONTENT_TYPE: 'application/zip'
+          LLVM_ROOT_OPTION: '--llvm-root=C:/llvm-project'
         # - os: macos-m1-self-hosted
         #   ARCH: ''
         #   TARGET: win-x64
         #   ASSET_PATH: 'build/dist/rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
         #   ASSET_NAME: 'rust-1.54.0-dev-aarch64-apple-darwin.tar.xz'
         #   ASSET_CONTENT_TYPE: 'application/x-tar'
+        #   LLVM_ROOT_OPTION: ''
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -115,19 +120,16 @@ jobs:
       #      mkdir llvm
       #      wget --quiet https://github.com/georgik/idf-llvm-build/releases/download/v11.0.0/llvm-11.0.0-${{ matrix.TARGET }}.tar.xz
       #      tar xf llvm-11.0.0-${{ matrix.target }}.tar.xz
-      - name: Prepare build - not cached LLVM
-        if: ${{ matrix.os != 'macos-m1-self-hosted' }}
-        run: python3 src/bootstrap/configure.py --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
-      - name: Prepare build - cached LLVM
+      - name: Prepare build
         if: ${{ matrix.os == 'macos-m1-self-hosted' }}
-        run: python3 src/bootstrap/configure.py --llvm-root=../llvm/build --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
+        run: python3 src/bootstrap/configure.py ${{ matrix.LLVM_ROOT_OPTION }} --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: python3 src/bootstrap/configure.py --llvm-root=llvm --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
         # run: ./configure --experimental-targets=Xtensa --enable-extended --tools=rustfmt --dist-compression-formats='xz'
       - name: Build with x.py - only components
         if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-self-hosted' }}
         run: |
-          python3 x.py build compiler/rustc src/tools/rustfmt library/std --stage 2 --exclude src/doc
-          python3 x.py dist src --stage 2 --exclude src/doc
+          python3 x.py build compiler/rustc src/tools/rustfmt library/std --stage 2
+          python3 x.py dist src --stage 2
       - name: Build with x.py - dist packages
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-18.04' }}
         run: python3 x.py dist --stage 2 --exclude src/doc
