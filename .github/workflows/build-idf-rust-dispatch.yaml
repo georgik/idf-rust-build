@@ -81,12 +81,12 @@ jobs:
         #   ASSET_CONTENT_TYPE: 'application/x-tar'
         #   LLVM_ROOT_OPTION: ''
         - os: windows-latest
-         ARCH: ''
-         TARGET: win-x64
-         ASSET_PATH: 'build/dist/esp.zip'
-         ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
-         ASSET_CONTENT_TYPE: 'application/zip'
-         LLVM_ROOT_OPTION: ''
+          ARCH: ''
+          TARGET: win-x64
+          ASSET_PATH: 'build/dist/esp.zip'
+          ASSET_NAME: 'rust-1.54.0-dev-x86_64-pc-windows-msvc.zip'
+          ASSET_CONTENT_TYPE: 'application/zip'
+          LLVM_ROOT_OPTION: ''
         # - os: windows-self-hosted
         #   ARCH: ''
         #   TARGET: win-x64
